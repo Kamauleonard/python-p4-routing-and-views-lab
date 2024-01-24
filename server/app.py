@@ -1,37 +1,49 @@
+#!/usr/bin/env python3
+
 from flask import Flask
 
 app = Flask(__name__)
 
 @app.route('/')
 def index():
-    return '<h1>Python Operations with Flask Routing and Views</h1>'
+    return "<h1>Python Operations with Flask Routing and Views</h1>"
 
-@app.route('/print/hello')
-def print_hello():
-    text = 'hello'
-    print(text)  # Print to console
-    return text  # Return the plain text
+@app.route('/print/<string_param>')
+def print_string(string_param):
+    print(f"{string_param}")
+    return f"{string_param}"
 
-@app.route('/count/<int:number>')
-def count(number):
-    numbers_list = '\n'.join(str(i) for i in range(number + 1))
-    return numbers_list  # Return plain text
+@app.route('/count/<int:int_param>')
+def count(int_param):
+    numbers = '\n'.join(str(num) for num in range(int_param))
+    return f"{numbers}\n"
 
-@app.route('/math/<float:num1><operation><float:num2>')
+@app.route('/math/<int:num1>/<operation>/<int:num2>')
 def math(num1, operation, num2):
-    result = None
-    if operation == '+':
-        result = num1 + num2
-    elif operation == '-':
-        result = num1 - num2
-    elif operation == '*':
-        result = num1 * num2
-    elif operation == 'div':
-        result = num1 / num2
-    elif operation == '%':
-        result = num1 % num2
+    result = perform_math_operation(num1, operation, num2)
+    return f"{result}"
 
-    return str(result)  # Return the result as plain text
+def perform_math_operation(num1, operation, num2):
+    if operation == '+':
+        return num1 + num2
+    elif operation == '-':
+        return num1 - num2
+    elif operation == '*':
+        return num1 * num2
+    elif operation == 'div':
+        if num2 == 0:
+            return "Cannot divide by zero"
+        return num1 / num2
+    elif operation == '%':
+        if num2 == 0:
+            return "Cannot modulo by zero"
+        return num1 % num2
+    else:
+        return "Invalid operation"
+
+if __name__ == '__main__':
+    app.run(debug=True)
 
 if __name__ == '__main__':
     app.run(port=5555, debug=True)
+ 
